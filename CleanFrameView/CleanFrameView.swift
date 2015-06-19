@@ -183,9 +183,8 @@ public class CleanFrameView : NSView {
             NSNotificationCenter.defaultCenter().postNotificationName(NSWindowWillStartLiveResizeNotification, object: self.window!)
         }
         
-        var originalMouseLocationRect = window.convertRectToScreen(NSRect(origin: theEvent.locationInWindow, size: CGSize()))
+        let originalMouseLocationRect = window.convertRectToScreen(NSRect(origin: theEvent.locationInWindow, size: CGSize()))
         var originalMouseLocation = originalMouseLocationRect.origin
-        let originalFrame = window.frame
         var windowFrame = window.frame
         var delta = NSPoint()
         
@@ -208,8 +207,6 @@ public class CleanFrameView : NSView {
             //var newFrame = originalFrame
             
             let treshold = 0
-            let absdeltay = fabs(delta.y)
-            let absdeltax = fabs(delta.x)
             //            println("x/y: \(absdeltax) \(absdeltay)")
             
             if resize && (fabs(delta.y) >= CGFloat(treshold) || fabs(delta.x) >= CGFloat(treshold)) {
@@ -332,7 +329,6 @@ class CardinalDirectionHelper {
     
     func rectForDirection(direction: CardinalDirection) -> NSRect {
         let southTopCorner = rect.origin.y + cornerInset
-        let southTopSide = rect.origin.y + sideInset
         let southBottom = rect.origin.y
         
         let northTop = NSMaxY(rect)
@@ -341,7 +337,6 @@ class CardinalDirectionHelper {
         
         let westLeft = rect.origin.x
         let westRightCorner = westLeft + cornerInset
-        let westRightSide = westLeft + sideInset
         
         let eastRight = NSMaxX(rect)
         let eastLeftCorner = eastRight - cornerInset
