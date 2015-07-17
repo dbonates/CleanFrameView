@@ -36,8 +36,6 @@ public class CleanWindow: NSWindow {
         self.backgroundColor = NSColor.clearColor()
         self.hasShadow = false
         self.contentView = CleanFrameView(frame: NSZeroRect)
-        @IBAction func playCssDemo(sender: AnyObject) {
-        }
         self.releasedWhenClosed = false
         
     }
