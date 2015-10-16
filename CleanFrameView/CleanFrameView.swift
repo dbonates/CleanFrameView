@@ -108,7 +108,7 @@ public class CleanFrameView : NSView {
             self.cacheImage!.lockFocus()
 
             var rect = self.bounds
-            rect.inset(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
+            rect.insetInPlace(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
             
             NSGraphicsContext.saveGraphicsState()
             
@@ -164,7 +164,7 @@ public class CleanFrameView : NSView {
     
     private func buildDirectionHelper() -> CardinalDirectionHelper {
         var rect = self.bounds
-        rect.inset(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
+        rect.insetInPlace(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
         let directionHelper = CardinalDirectionHelper(rect: rect, cornerInset: resizeInsetCornerWidth, sideInset: resizeInsetSideWidth)
         return directionHelper
     }
