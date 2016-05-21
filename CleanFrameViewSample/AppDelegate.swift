@@ -28,7 +28,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 public class CleanWindow: NSWindow {
     
     public init(contentRect: NSRect) {
-        super.init(contentRect: contentRect, styleMask: NSBorderlessWindowMask, backing: .Buffered, `defer`: false)
+        super.init(contentRect: contentRect, styleMask: NSBorderlessWindowMask, backing: .Buffered, defer: false)
         
         self.movableByWindowBackground = false;
         self.alphaValue = 1
