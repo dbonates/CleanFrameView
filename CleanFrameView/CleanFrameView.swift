@@ -12,10 +12,10 @@ import AppKit
 
 public class CleanFrameView : NSView {
     
-    let northWestSouthEastCursor: NSCursor
-    let northeastsouthwestCursor: NSCursor
-    let eastWestCursor: NSCursor
-    let northSouthCursor: NSCursor
+    var northWestSouthEastCursor: NSCursor!
+    var northeastsouthwestCursor: NSCursor!
+    var eastWestCursor: NSCursor!
+    var northSouthCursor: NSCursor!
 
     public var resizable = true {
         didSet {
@@ -76,32 +76,13 @@ public class CleanFrameView : NSView {
     }
     
     public override init(frame frameRect: NSRect) {
-        
-        // \
-        let northWestSouthEastPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthwestsoutheast.pdf", NSBundle.mainBundle().bundlePath)
-        let northWestSouthEastImage = NSImage(contentsOfFile: northWestSouthEastPath as String)!
-        self.northWestSouthEastCursor = NSCursor(image: northWestSouthEastImage, hotSpot: NSPoint(x: northWestSouthEastImage.size.width/2, y:northWestSouthEastImage.size.height/2))
-        
-        // /
-        let northeastsouthwestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenortheastsouthwest.pdf", NSBundle.mainBundle().bundlePath)
-        let northeastsouthwestImage = NSImage(contentsOfFile: northeastsouthwestPath as String)!
-        self.northeastsouthwestCursor = NSCursor(image: northeastsouthwestImage, hotSpot: NSPoint(x: northeastsouthwestImage.size.width/2, y:northeastsouthwestImage.size.height/2))
-        
-        // -
-        let eastWestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizeeastwest.pdf", NSBundle.mainBundle().bundlePath)
-        let eastWestImage = NSImage(contentsOfFile: eastWestPath as String)!
-        self.eastWestCursor = NSCursor(image: eastWestImage, hotSpot: NSPoint(x: eastWestImage.size.width/2, y:eastWestImage.size.height/2))
-        
-        // |
-        let northSouthPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthsouth.pdf", NSBundle.mainBundle().bundlePath)
-        let northSouthImage = NSImage(contentsOfFile: northSouthPath as String)!
-        self.northSouthCursor = NSCursor(image: northSouthImage, hotSpot: NSPoint(x: northSouthImage.size.width/2, y:northSouthImage.size.height/2))
-        
         super.init(frame: frameRect)
+        initialize()
     }
     
     required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        initialize()
     }
     
     override public func drawRect(dirtyRect: NSRect) {
@@ -304,6 +285,28 @@ public class CleanFrameView : NSView {
             originalMouseLocation = newMouseLocation
         }
         
+    }
+    
+    private func initialize() {
+        // \
+        let northWestSouthEastPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthwestsoutheast.pdf", NSBundle.mainBundle().bundlePath)
+        let northWestSouthEastImage = NSImage(contentsOfFile: northWestSouthEastPath as String)!
+        self.northWestSouthEastCursor = NSCursor(image: northWestSouthEastImage, hotSpot: NSPoint(x: northWestSouthEastImage.size.width/2, y:northWestSouthEastImage.size.height/2))
+        
+        // /
+        let northeastsouthwestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenortheastsouthwest.pdf", NSBundle.mainBundle().bundlePath)
+        let northeastsouthwestImage = NSImage(contentsOfFile: northeastsouthwestPath as String)!
+        self.northeastsouthwestCursor = NSCursor(image: northeastsouthwestImage, hotSpot: NSPoint(x: northeastsouthwestImage.size.width/2, y:northeastsouthwestImage.size.height/2))
+        
+        // -
+        let eastWestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizeeastwest.pdf", NSBundle.mainBundle().bundlePath)
+        let eastWestImage = NSImage(contentsOfFile: eastWestPath as String)!
+        self.eastWestCursor = NSCursor(image: eastWestImage, hotSpot: NSPoint(x: eastWestImage.size.width/2, y:eastWestImage.size.height/2))
+        
+        // |
+        let northSouthPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthsouth.pdf", NSBundle.mainBundle().bundlePath)
+        let northSouthImage = NSImage(contentsOfFile: northSouthPath as String)!
+        self.northSouthCursor = NSCursor(image: northSouthImage, hotSpot: NSPoint(x: northSouthImage.size.width/2, y:northSouthImage.size.height/2))
     }
     
 }
