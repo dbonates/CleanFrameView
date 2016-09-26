@@ -40,10 +40,6 @@ public class CleanWindow: NSWindow {
         
     }
     
-    required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override public var canBecomeMainWindow: Bool {
         get {return true}
     }

@@ -141,7 +141,7 @@ public class CleanFrameView : NSView {
             // println("load cache");
         }
         
-        self.cacheImage!.drawAtPoint(NSPoint(), fromRect: NSRect(), operation:  .CompositeCopy, fraction: 1)
+        self.cacheImage!.drawAtPoint(NSPoint(), fromRect: NSRect(), operation:  .Copy, fraction: 1)
 
         
     }
@@ -190,7 +190,7 @@ public class CleanFrameView : NSView {
         
         while true {
             
-            let newEvent = window.nextEventMatchingMask(Int(NSEventMask.LeftMouseDraggedMask.rawValue) | Int(NSEventMask.LeftMouseUpMask.rawValue))
+            let newEvent = window.nextEventMatchingMask([NSEventMask.LeftMouseDragged, NSEventMask.LeftMouseUp])
             
             if newEvent!.type == .LeftMouseUp {
                 NSNotificationCenter.defaultCenter().postNotificationName(NSWindowDidEndLiveResizeNotification, object: self.window!)
