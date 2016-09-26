@@ -16,6 +16,12 @@ public class CleanFrameView : NSView {
     let northeastsouthwestCursor: NSCursor
     let eastWestCursor: NSCursor
     let northSouthCursor: NSCursor
+
+    public var resizable = true {
+        didSet {
+            window?.invalidateCursorRectsForView(self)
+        }
+    }
     
     public var cornerRadius: CGFloat = 5 {
         didSet {
@@ -92,13 +98,11 @@ public class CleanFrameView : NSView {
         self.northSouthCursor = NSCursor(image: northSouthImage, hotSpot: NSPoint(x: northSouthImage.size.width/2, y:northSouthImage.size.height/2))
         
         super.init(frame: frameRect)
-        self.wantsLayer = false // YES will made text drawing a little thinner compared to textview
     }
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     override public func drawRect(dirtyRect: NSRect) {
         
@@ -150,16 +154,18 @@ public class CleanFrameView : NSView {
     
     override public func resetCursorRects() {
         
-        let directionHelper = self.buildDirectionHelper()
+        if resizable {
+            let directionHelper = self.buildDirectionHelper()
 
-        self.addCursorRect(directionHelper.rectForDirection(.North), cursor: northSouthCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.NorthEast), cursor: northeastsouthwestCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.East), cursor: eastWestCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.SouthEast), cursor: northWestSouthEastCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.South), cursor: northSouthCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.SouthWest), cursor: northeastsouthwestCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.West), cursor: eastWestCursor)
-        self.addCursorRect(directionHelper.rectForDirection(.NorthWest), cursor: northWestSouthEastCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.North), cursor: northSouthCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.NorthEast), cursor: northeastsouthwestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.East), cursor: eastWestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.SouthEast), cursor: northWestSouthEastCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.South), cursor: northSouthCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.SouthWest), cursor: northeastsouthwestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.West), cursor: eastWestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.NorthWest), cursor: northWestSouthEastCursor)
+        }
     }
     
     private func buildDirectionHelper() -> CardinalDirectionHelper {
@@ -170,6 +176,11 @@ public class CleanFrameView : NSView {
     }
     
     override public func mouseDown(theEvent: NSEvent) {
+        
+        if !resizable {
+            return
+        }
+        
         let pointInView = self.convertPoint(theEvent.locationInWindow, fromView: nil)
         var resize = false
         let window = self.window! as NSWindow

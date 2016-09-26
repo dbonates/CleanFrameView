@@ -30,12 +30,14 @@ public class CleanWindow: NSWindow {
     public init(contentRect: NSRect) {
         super.init(contentRect: contentRect, styleMask: NSBorderlessWindowMask, backing: .Buffered, defer: false)
         
-        self.movableByWindowBackground = false;
+        self.movableByWindowBackground = true
         self.alphaValue = 1
         self.opaque = false
         self.backgroundColor = NSColor.clearColor()
         self.hasShadow = false
-        self.contentView = CleanFrameView(frame: NSZeroRect)
+        let cleanFrameView = CleanFrameView(frame: NSZeroRect)
+        cleanFrameView.resizable = false
+        self.contentView = cleanFrameView
         self.releasedWhenClosed = false
         
     }
