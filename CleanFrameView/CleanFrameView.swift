@@ -10,55 +10,55 @@
 import AppKit
 
 
-public class CleanFrameView : NSView {
+open class CleanFrameView : NSView {
     
     var northWestSouthEastCursor: NSCursor!
     var northeastsouthwestCursor: NSCursor!
     var eastWestCursor: NSCursor!
     var northSouthCursor: NSCursor!
 
-    public var resizable = true {
+    open var resizable = true {
         didSet {
-            window?.invalidateCursorRectsForView(self)
+            window?.invalidateCursorRects(for: self)
         }
     }
     
-    public var cornerRadius: CGFloat = 5 {
-        didSet {
-            self.cacheImage = nil
-            self.needsDisplay = true
-        }
-    }
-    
-    public var shadowBlurRadius: CGFloat = 15 {
+    open var cornerRadius: CGFloat = 5 {
         didSet {
             self.cacheImage = nil
             self.needsDisplay = true
         }
     }
     
-    public var shadowColor: NSColor = NSColor(calibratedRed: 0, green: 0, blue: 0, alpha: 0.085) {
+    open var shadowBlurRadius: CGFloat = 15 {
         didSet {
             self.cacheImage = nil
             self.needsDisplay = true
         }
     }
     
-    public var backgroundColor: NSColor = NSColor.whiteColor() {
+    open var shadowColor: NSColor = NSColor(calibratedRed: 0, green: 0, blue: 0, alpha: 0.085) {
         didSet {
             self.cacheImage = nil
             self.needsDisplay = true
         }
     }
     
-    public var strokeColor: NSColor = NSColor(calibratedRed: 220/255, green: 220/255, blue: 220/255, alpha: 1) {
+    open var backgroundColor: NSColor = NSColor.white {
         didSet {
             self.cacheImage = nil
             self.needsDisplay = true
         }
     }
     
-    public var strokeLineWidth: CGFloat = 0.5 {
+    open var strokeColor: NSColor = NSColor(calibratedRed: 220/255, green: 220/255, blue: 220/255, alpha: 1) {
+        didSet {
+            self.cacheImage = nil
+            self.needsDisplay = true
+        }
+    }
+    
+    open var strokeLineWidth: CGFloat = 0.5 {
         didSet {
             self.cacheImage = nil
             self.needsDisplay = true
@@ -71,8 +71,8 @@ public class CleanFrameView : NSView {
     var cacheImageSize = NSSize()
     var cacheImage: NSImage?
     
-    public override var alignmentRectInsets: NSEdgeInsets {
-        return NSEdgeInsets(top: self.shadowBlurRadius, left: self.shadowBlurRadius, bottom: self.shadowBlurRadius, right: self.shadowBlurRadius)
+    open override var alignmentRectInsets: EdgeInsets {
+        return EdgeInsets(top: self.shadowBlurRadius, left: self.shadowBlurRadius, bottom: self.shadowBlurRadius, right: self.shadowBlurRadius)
     }
     
     public override init(frame frameRect: NSRect) {
@@ -85,15 +85,14 @@ public class CleanFrameView : NSView {
         initialize()
     }
     
-    override public func drawRect(dirtyRect: NSRect) {
+    override open func draw(_ dirtyRect: NSRect) {
         
         if (!NSEqualSizes(self.cacheImageSize, self.bounds.size) || self.cacheImage == nil) {
             self.cacheImageSize = self.bounds.size
             self.cacheImage = NSImage(size: self.bounds.size)
             self.cacheImage!.lockFocus()
 
-            var rect = self.bounds
-            rect.insetInPlace(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
+            var rect = self.bounds.insetBy(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
             
             NSGraphicsContext.saveGraphicsState()
             
@@ -126,43 +125,42 @@ public class CleanFrameView : NSView {
             // println("load cache");
         }
         
-        self.cacheImage!.drawAtPoint(NSPoint(), fromRect: NSRect(), operation:  .Copy, fraction: 1)
+        self.cacheImage!.draw(at: NSPoint(), from: NSRect(), operation:  .copy, fraction: 1)
 
         
     }
 
     // MARK:  Cursor
     
-    override public func resetCursorRects() {
+    override open func resetCursorRects() {
         
         if resizable {
             let directionHelper = self.buildDirectionHelper()
 
-            self.addCursorRect(directionHelper.rectForDirection(.North), cursor: northSouthCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.NorthEast), cursor: northeastsouthwestCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.East), cursor: eastWestCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.SouthEast), cursor: northWestSouthEastCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.South), cursor: northSouthCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.SouthWest), cursor: northeastsouthwestCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.West), cursor: eastWestCursor)
-            self.addCursorRect(directionHelper.rectForDirection(.NorthWest), cursor: northWestSouthEastCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.north), cursor: northSouthCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.northEast), cursor: northeastsouthwestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.east), cursor: eastWestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.southEast), cursor: northWestSouthEastCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.south), cursor: northSouthCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.southWest), cursor: northeastsouthwestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.west), cursor: eastWestCursor)
+            self.addCursorRect(directionHelper.rectForDirection(.northWest), cursor: northWestSouthEastCursor)
         }
     }
     
-    private func buildDirectionHelper() -> CardinalDirectionHelper {
-        var rect = self.bounds
-        rect.insetInPlace(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
+    fileprivate func buildDirectionHelper() -> CardinalDirectionHelper {
+        let rect = self.bounds.insetBy(dx: self.shadowBlurRadius, dy: self.shadowBlurRadius)
         let directionHelper = CardinalDirectionHelper(rect: rect, cornerInset: resizeInsetCornerWidth, sideInset: resizeInsetSideWidth)
         return directionHelper
     }
     
-    override public func mouseDown(theEvent: NSEvent) {
+    override open func mouseDown(with theEvent: NSEvent) {
         
         if !resizable {
             return
         }
         
-        let pointInView = self.convertPoint(theEvent.locationInWindow, fromView: nil)
+        let pointInView = self.convert(theEvent.locationInWindow, from: nil)
         var resize = false
         let window = self.window! as NSWindow
         
@@ -171,25 +169,25 @@ public class CleanFrameView : NSView {
         
         if direction != nil {
             resize = true
-            window.movableByWindowBackground = false
-            NSNotificationCenter.defaultCenter().postNotificationName(NSWindowWillStartLiveResizeNotification, object: self.window!)
+            window.isMovableByWindowBackground = false
+            NotificationCenter.default.post(name: NSNotification.Name.NSWindowWillStartLiveResize, object: self.window!)
         }
         
-        let originalMouseLocationRect = window.convertRectToScreen(NSRect(origin: theEvent.locationInWindow, size: CGSize()))
+        let originalMouseLocationRect = window.convertToScreen(NSRect(origin: theEvent.locationInWindow, size: CGSize()))
         var originalMouseLocation = originalMouseLocationRect.origin
         var windowFrame = window.frame
         var delta = NSPoint()
         
         while true {
             
-            let newEvent = window.nextEventMatchingMask([NSEventMask.LeftMouseDragged, NSEventMask.LeftMouseUp])
+            let newEvent = window.nextEvent(matching: [NSEventMask.leftMouseDragged, NSEventMask.leftMouseUp])
             
-            if newEvent!.type == .LeftMouseUp {
-                NSNotificationCenter.defaultCenter().postNotificationName(NSWindowDidEndLiveResizeNotification, object: self.window!)
+            if newEvent!.type == .leftMouseUp {
+                NotificationCenter.default.post(name: NSNotification.Name.NSWindowDidEndLiveResize, object: self.window!)
                 break
             }
             
-            let newMouseLocationRect = window.convertRectToScreen(NSRect(origin: newEvent!.locationInWindow, size: CGSize()))
+            let newMouseLocationRect = window.convertToScreen(NSRect(origin: newEvent!.locationInWindow, size: CGSize()))
             let newMouseLocation = newMouseLocationRect.origin
             delta.x += newMouseLocation.x - originalMouseLocation.x
             delta.y += newMouseLocation.y - originalMouseLocation.y
@@ -206,13 +204,13 @@ public class CleanFrameView : NSView {
                 // resize
                 
                 switch direction! {
-                case .North:
+                case .north:
                     delta.y = (windowFrame.size.height + delta.y > self.window!.minSize.height ? delta.y : self.window!.minSize.height - windowFrame.size.height)
                     
                     windowFrame.size.height += delta.y
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .NorthEast:
+                case .northEast:
                     delta.x = (windowFrame.size.width + delta.x > self.window!.minSize.width ? delta.x : self.window!.minSize.width - windowFrame.size.width)
                     delta.y = (windowFrame.size.height + delta.y > self.window!.minSize.height ? delta.y : self.window!.minSize.height - windowFrame.size.height)
                     
@@ -220,13 +218,13 @@ public class CleanFrameView : NSView {
                     windowFrame.size.width += delta.x
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .East:
+                case .east:
                     delta.x = (windowFrame.size.width + delta.x > self.window!.minSize.width ? delta.x : self.window!.minSize.width - windowFrame.size.width)
                     
                     windowFrame.size.width += delta.x
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .SouthEast:
+                case .southEast:
                     delta.x = (windowFrame.size.width + delta.x > self.window!.minSize.width ? delta.x : self.window!.minSize.width - windowFrame.size.width)
                     delta.y = (windowFrame.size.height - delta.y > self.window!.minSize.height ? delta.y : windowFrame.size.height - self.window!.minSize.height)
                     
@@ -235,14 +233,14 @@ public class CleanFrameView : NSView {
                     windowFrame.origin.y += delta.y
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .South:
+                case .south:
                     delta.y = (windowFrame.size.height - delta.y > self.window!.minSize.height ? delta.y : windowFrame.size.height - self.window!.minSize.height)
                     
                     windowFrame.size.height -= delta.y
                     windowFrame.origin.y += delta.y
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .SouthWest:
+                case .southWest:
                     delta.x = (windowFrame.size.width - delta.x > self.window!.minSize.width ? delta.x : windowFrame.size.width - self.window!.minSize.width)
                     delta.y = (windowFrame.size.height - delta.y > self.window!.minSize.height ? delta.y : windowFrame.size.height - self.window!.minSize.height)
                     
@@ -252,14 +250,14 @@ public class CleanFrameView : NSView {
                     windowFrame.origin.y += delta.y
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .West:
+                case .west:
                     delta.x = (windowFrame.size.width - delta.x > self.window!.minSize.width ? delta.x : windowFrame.size.width - self.window!.minSize.width)
                     
                     windowFrame.origin.x += delta.x
                     windowFrame.size.width -= delta.x
                     window.setFrame(windowFrame, display: true, animate: false)
                     
-                case .NorthWest:
+                case .northWest:
                     delta.x = (windowFrame.size.width - delta.x > self.window!.minSize.width ? delta.x : windowFrame.size.width - self.window!.minSize.width)
                     delta.y = (windowFrame.size.height + delta.y > self.window!.minSize.height ? delta.y : self.window!.minSize.height - windowFrame.size.height)
                     
@@ -287,24 +285,24 @@ public class CleanFrameView : NSView {
         
     }
     
-    private func initialize() {
+    fileprivate func initialize() {
         // \
-        let northWestSouthEastPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthwestsoutheast.pdf", NSBundle.mainBundle().bundlePath)
+        let northWestSouthEastPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthwestsoutheast.pdf", Bundle.main.bundlePath)
         let northWestSouthEastImage = NSImage(contentsOfFile: northWestSouthEastPath as String)!
         self.northWestSouthEastCursor = NSCursor(image: northWestSouthEastImage, hotSpot: NSPoint(x: northWestSouthEastImage.size.width/2, y:northWestSouthEastImage.size.height/2))
         
         // /
-        let northeastsouthwestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenortheastsouthwest.pdf", NSBundle.mainBundle().bundlePath)
+        let northeastsouthwestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenortheastsouthwest.pdf", Bundle.main.bundlePath)
         let northeastsouthwestImage = NSImage(contentsOfFile: northeastsouthwestPath as String)!
         self.northeastsouthwestCursor = NSCursor(image: northeastsouthwestImage, hotSpot: NSPoint(x: northeastsouthwestImage.size.width/2, y:northeastsouthwestImage.size.height/2))
         
         // -
-        let eastWestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizeeastwest.pdf", NSBundle.mainBundle().bundlePath)
+        let eastWestPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizeeastwest.pdf", Bundle.main.bundlePath)
         let eastWestImage = NSImage(contentsOfFile: eastWestPath as String)!
         self.eastWestCursor = NSCursor(image: eastWestImage, hotSpot: NSPoint(x: eastWestImage.size.width/2, y:eastWestImage.size.height/2))
         
         // |
-        let northSouthPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthsouth.pdf", NSBundle.mainBundle().bundlePath)
+        let northSouthPath = NSString(format: "%@/Contents/Frameworks/CleanFrameView.framework/Resources/resizenorthsouth.pdf", Bundle.main.bundlePath)
         let northSouthImage = NSImage(contentsOfFile: northSouthPath as String)!
         self.northSouthCursor = NSCursor(image: northSouthImage, hotSpot: NSPoint(x: northSouthImage.size.width/2, y:northSouthImage.size.height/2))
     }
@@ -313,8 +311,8 @@ public class CleanFrameView : NSView {
 
 
 enum CardinalDirection {
-    case North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest
-    static let AllValues = [North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest]
+    case north, northEast, east, southEast, south, southWest, west, northWest
+    static let AllValues = [north, northEast, east, southEast, south, southWest, west, northWest]
 }
 
 
@@ -330,7 +328,7 @@ class CardinalDirectionHelper {
         self.sideInset = sideInset
     }
     
-    func directionForPoint(point: NSPoint) -> CardinalDirection? {
+    func directionForPoint(_ point: NSPoint) -> CardinalDirection? {
         
         for direction in CardinalDirection.AllValues {
             if (NSPointInRect(point, rectForDirection(direction))) {
@@ -341,7 +339,7 @@ class CardinalDirectionHelper {
         return nil
     }
     
-    func rectForDirection(direction: CardinalDirection) -> NSRect {
+    func rectForDirection(_ direction: CardinalDirection) -> NSRect {
         let southTopCorner = rect.origin.y + cornerInset
         let southBottom = rect.origin.y
         
@@ -367,14 +365,14 @@ class CardinalDirectionHelper {
         let northWestRect = NSRect(x: westLeft, y: northBottomCorner, width: cornerInset, height: cornerInset)
         
         switch direction {
-        case .North: return northRect
-        case .NorthEast: return northEastRect
-        case .East: return eastRect
-        case .SouthEast: return southEastRect
-        case .South: return southRect
-        case .SouthWest: return southWestRect
-        case .West: return westRect
-        case .NorthWest: return northWestRect
+        case .north: return northRect
+        case .northEast: return northEastRect
+        case .east: return eastRect
+        case .southEast: return southEastRect
+        case .south: return southRect
+        case .southWest: return southWestRect
+        case .west: return westRect
+        case .northWest: return northWestRect
         }
         
     }

@@ -14,39 +14,39 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: CleanWindow!
     
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         self.window = CleanWindow(contentRect: NSRect(x: 500, y: 500, width: 200, height: 200))
         self.window.minSize = NSSize(width: 200, height: 200)
-        let app = NSApplication.sharedApplication()
-        app.activateIgnoringOtherApps(true)
+        let app = NSApplication.shared()
+        app.activate(ignoringOtherApps: true)
         self.window.makeKeyAndOrderFront(nil)
     }
 
 }
 
 
-public class CleanWindow: NSWindow {
+open class CleanWindow: NSWindow {
     
     public init(contentRect: NSRect) {
-        super.init(contentRect: contentRect, styleMask: NSBorderlessWindowMask, backing: .Buffered, defer: false)
+        super.init(contentRect: contentRect, styleMask: NSBorderlessWindowMask, backing: .buffered, defer: false)
         
-        self.movableByWindowBackground = true
+        self.isMovableByWindowBackground = true
         self.alphaValue = 1
-        self.opaque = false
-        self.backgroundColor = NSColor.clearColor()
+        self.isOpaque = false
+        self.backgroundColor = NSColor.clear
         self.hasShadow = false
         let cleanFrameView = CleanFrameView(frame: NSZeroRect)
         cleanFrameView.resizable = false
         self.contentView = cleanFrameView
-        self.releasedWhenClosed = false
+        self.isReleasedWhenClosed = false
         
     }
     
-    override public var canBecomeMainWindow: Bool {
+    override open var canBecomeMain: Bool {
         get {return true}
     }
     
-    override public var canBecomeKeyWindow: Bool {
+    override open var canBecomeKey: Bool {
         get {return true}
     }
     
